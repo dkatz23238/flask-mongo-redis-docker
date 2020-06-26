@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  myapp-core:
+    image: myapp-core
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+    environment:
+      - MYAPP_DB_CONN_STRING=mongodb://myapp:myappisawesome@mongodb:27017/myapp?retryWrites=true&w=majority
+      - REDIS_CONN_STRING=redis://redis:6379
+
+    depends_on:
+      - mongodb
+      - redis
+
+  mongodb:
+    image: "bitnami/mongodb:4.0"
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGODB_PASSWORD=myappisawesome
+      - MONGODB_USERNAME=myapp
+      - MONGODB_DATABASE=myapp
+      - MONGODB_ENABLE_DIRECTORY_PER_DB=yes
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
